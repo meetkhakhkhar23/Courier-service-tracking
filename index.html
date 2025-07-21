@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ravi Courier Tracking</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Track your parcels easily with Ravi Courier Service. Fast and secure parcel tracking for your convenience." />
+  <link rel="icon" href="https://i.postimg.cc/T3vZzbJx/2907a2ef-485c-4998-bb93-0eb8cf302aed.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -14,6 +17,8 @@
       flex-direction: column;
       align-items: center;
       padding: 24px;
+      min-height: 100vh;
+      box-sizing: border-box;
     }
 
     .logo-bar {
@@ -38,6 +43,7 @@
     .hero {
       text-align: center;
       margin-bottom: 24px;
+      max-width: 420px;
     }
 
     .hero h1 {
@@ -54,6 +60,9 @@
 
     .track-form {
       display: flex;
+      max-width: 360px;
+      width: 100%;
+      margin-bottom: 12px;
     }
 
     .track-form input {
@@ -62,7 +71,7 @@
       border: 1px solid #bbb;
       border-radius: 30px 0 0 30px;
       outline: none;
-      width: 220px;
+      width: 100%;
       transition: border-color 0.2s;
     }
 
@@ -79,18 +88,57 @@
       color: #fff;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      min-width: 90px;
     }
 
-    .track-form button:hover {
-      background: #f57c00;
+    .track-form button:hover:not(:disabled) {
+      background-color: #f57c00;
+    }
+
+    .track-form button:disabled {
+      background-color: #ffa726;
+      cursor: not-allowed;
+    }
+
+    /* Responsive stack on small screens */
+    @media (max-width: 400px) {
+      .track-form {
+        flex-direction: column;
+      }
+      .track-form input,
+      .track-form button {
+        border-radius: 30px;
+        width: 100%;
+        margin: 6px 0;
+      }
+    }
+
+    #confirmationMsg {
+      font-size: 0.9rem;
+      color: #1a237e;
+      min-height: 20px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    footer {
+      margin-top: auto;
+      margin-top: 48px;
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+      user-select: none;
     }
   </style>
 </head>
 <body>
 
   <div class="logo-bar">
-    <img src="https://i.postimg.cc/T3vZzbJx/2907a2ef-485c-4998-bb93-0eb8cf302aed.png" alt="Ravi Courier Logo">
+    <img src="https://i.postimg.cc/T3vZzbJx/2907a2ef-485c-4998-bb93-0eb8cf302aed.png" alt="Ravi Courier Logo" />
     <div class="brand-title">RAVI COURIER SERVICE</div>
   </div>
 
@@ -100,19 +148,53 @@
   </div>
 
   <form class="track-form" onsubmit="trackParcel(); return false;">
-    <input type="text" id="trackingInput" placeholder="Enter Tracking ID..." required />
-    <button type="submit">Track</button>
+    <input
+      type="text"
+      id="trackingInput"
+      placeholder="Enter Tracking ID..."
+      required
+      aria-label="Tracking ID"
+      autocomplete="off"
+    />
+    <button type="submit" aria-label="Track Parcel">Track</button>
   </form>
+
+  <div id="confirmationMsg" aria-live="polite" role="status"></div>
+
+  <footer>
+    <p>Contact us: support@ravicourier.com | +91 12345 67890</p>
+    <p>© 2025 Ravi Courier Service. All rights reserved.</p>
+  </footer>
 
   <script>
     function trackParcel() {
-      const val = document.getElementById('trackingInput').value.trim();
+      const input = document.getElementById('trackingInput');
+      const val = input.value.trim();
+      const button = document.querySelector('.track-form button');
+      const confirmation = document.getElementById('confirmationMsg');
+
       if (!val) {
         alert("Please enter a tracking ID.");
         return;
       }
-      const url = "http://crm.markerp.in/Frm_DocTrackWeb.aspx?docno=" + encodeURIComponent(val);
+
+      // Disable button and show loading state
+      button.disabled = true;
+      button.textContent = "Tracking...";
+
+      // Show confirmation message
+      confirmation.textContent = "Tracking info is opening in a new tab.";
+
+      // Open tracking page in new tab with HTTPS URL
+      const url = "https://crm.markerp.in/Frm_DocTrackWeb.aspx?docno=" + encodeURIComponent(val);
       window.open(url, '_blank');
+
+      // Reset button and message after 2 seconds
+      setTimeout(() => {
+        button.disabled = false;
+        button.textContent = "Track";
+        confirmation.textContent = "";
+      }, 2000);
     }
   </script>
 
